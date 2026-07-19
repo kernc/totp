@@ -1,17 +1,23 @@
-#!/usr/bin/env bash
+#!/usr/bin/sh
 #
 # Yet another minimal TOTP generator
 #
-#/ Usage:
-#/   ./totp <secret>
+# © Kevin Cui <krazycavin@gmail.com>
+#
+# https://github.com/KevCui/totp
+#
+# Converted to POSIX sh for @kernc/totp.
+#
+# Usage: ./$0 < secret_file
 
-secret="${1^^}$(printf "%$(( (8-${#1}) % 8 ))s" | tr " " "=")"
-key="$(base32 -d <<< "$secret" \
-    | xxd -p \
-    | tr -cd 0-9A-Fa-f)"
-mac=$(printf "%016X" "$(( ($(date +%s)) / 30))" \
-    | xxd -r -p \
-    | openssl dgst -sha1 -binary -mac hmac -macopt "hexkey:$key" \
-    | xxd -p)
-offset="$(( 16#"${mac:39:1}" * 2))"
-printf "%06d\n" "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
+hd () { od -An -tx1 | tr -d ' \n'; }
+hd_rev () { perl -pe 's/../chr hex $&/ge'; }
+hmac () { openssl dgst -sha1 -binary -mac hmac -macopt "hexkey:$1"; }
+
+secret="$(cat)"
+secret="$secret$(printf "%$(( (8-${#secret}) % 8 ))s" | tr ' ' '=')"
+key="$(echo "$secret" | base32 -d | hd)"
+mac="$(printf "%016X" "$(( ($(date +%s)) / 30 ))" | hd_rev | hmac "$key" | hd)"
+offset="$(( 0x$(echo "$mac" | cut -c40) * 2 ))"
+part="$(echo "$mac" | cut -c$((offset + 1))-$((offset + 8)))"
+printf "%06d\n" "$(( (0x$part & 0x7FFFFFFF) % 1000000 ))"
