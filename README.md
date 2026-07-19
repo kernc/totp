@@ -29,12 +29,12 @@ $ zbarimg path/to/qr1.png
 QR-Code:otpauth://totp/Login?secret=GEZDGNBVGY3TQOIK&issuer=Employer
 
 $ zbarimg path/to/qr*.png | grep -o otpauth.* > otpauth_uris.list
-$ .totp/import.sh < otpauth_uris.list
+$ .totp/import < otpauth_uris.list
 ```
 
 Assuming your time is correct, get the latest PIN numbers:
 ```script
-$ .totp/totp.sh
+$ .totp/totp
 123456	Employer/Login
 331666	Google/auth
 012489	CoinWallet/x
@@ -42,7 +42,7 @@ $ .totp/totp.sh
 
 Export to QR codes:
 ```script
-$ .totp/export.sh
+$ .totp/export
 totp_qr1.png	otpauth://...
 totp_qr2.png	otpauth://...
 totp_qr3.png	otpauth://...

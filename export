@@ -11,7 +11,7 @@ command -v qrencode >/dev/null 2>&1 &&
 warn 'WARNING: qrencode not available. apt install qrencode'
 
 i=0
-VERBOSE=1 "${0%/*}"/totp.sh |
+VERBOSE=1 "${0%/*}"/totp |
     cut -f 3 |
     while read -r url; do
         i=$((i + 1))
