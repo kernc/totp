@@ -5,6 +5,8 @@
 # Environment variables: SECRETS_DIR, PASSWORD | SECURITY_TOKEN
 set -eu
 
+. "${0%/*}"/lib/_lib.sh
+
 qr_cmd () { true; }
 command -v qrencode >/dev/null 2>&1 &&
     qr_cmd () { qrencode -v1 -m2 -s10 -d100 -o- "$1" >"$2"; } ||
