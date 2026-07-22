@@ -23,6 +23,13 @@ This project vendors the
 by [**@KevCui**](https://github.com/KevCui).
 
 
+Features
+--------
+* Some 100 vetted lines of POSIX Shell total
+* Import and export via QR-codes or `otpauth://` or `otpauth-migration://` URIs
+* Safe encryption of secrets in storage (via `openssl enc`)
+
+
 Installation
 ------------
 ```sh
@@ -88,14 +95,13 @@ Environment variables
   If the password is empty, the secrets are left unencrypted.
 * **`SECURITY_TOKEN=`** If set, the password will be derived from a PKCS#11
   **hardware security token** _object URL_
-  [matching this string](https://github.com/search?q=repo%3Akernc%2Ftotp+%24SECURITY_TOKEN&type=code).
+  [matching this string](https://github.com/search?q=repo%3Akernc%2Ftotp+%22%24SECURITY_TOKEN%22&type=code).
   List available token object URL strings with:
-  ```shell
+  ```sh
+  # Runtime deps to use the feature
+  sudo apt install gnutls-bin libengine-pkcs11-openssl
+
   p11tool --list-token-urls | grep 'type=private'
-  ```
-  Runtime dependencies to use the feature:
-  ```shell
-  sudo apt install libengine-pkcs11-openssl
   ```
 * **`SECRETS_DIR=`** Save/read secrets from this directory (default: `$HOME/.totp/secrets`).
 * **`VERBOSE=`** Make `totp` emit _three_ instead of two <kbd>Tab</kbd>-separated columns: PIN, label, and the full export URI.
